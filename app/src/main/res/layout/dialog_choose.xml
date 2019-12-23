@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="message"
+            type="String" />
+
+        <variable
+            name="ok"
+            type="String" />
+
+        <variable
+            name="cancel"
+            type="String" />
+
+        <variable
+            name="okHandler"
+            type="com.comAndDev.geofencingtest.global.helpers.ActionHandler" />
+
+        <variable
+            name="cancelHandler"
+            type="com.comAndDev.geofencingtest.global.helpers.ActionHandler" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_20dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/rect_white_8dp_round_corners"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/padding_15dp"
+            android:paddingBottom="@dimen/padding_15dp">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_10dp"
+                android:paddingEnd="@dimen/padding_10dp"
+                android:paddingBottom="@dimen/padding_10dp"
+                android:text="@{title}"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/purple"
+                android:textSize="@dimen/textSize_18sp"
+                android:textStyle="bold"
+                android:visibility="@{title == null ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/tv_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding_10dp"
+                android:paddingEnd="@dimen/padding_10dp"
+                android:paddingBottom="@dimen/padding_20dp"
+                android:text="@{message}"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/textSize_16sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_ok"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dialog_btn_height"
+                    android:layout_gravity="center"
+                    android:minWidth="@dimen/dialog_btn_width"
+                    android:onClick="@{okHandler::onClick}"
+                    android:text="@{ok == null ? @string/ok : ok}"
+                    android:textColor="@color/btn_dialog_tint_color"
+                    android:textSize="@dimen/textSize_16sp"
+                    app:backgroundTint="@color/btn_dialog_bg_color"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="@color/dark_blue"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dialog_btn_height"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:onClick="@{cancelHandler::onClick}"
+                    android:text="@{cancel == null ? @string/cancel : cancel}"
+                    android:textColor="@color/btn_dialog_tint_color"
+                    android:textSize="@dimen/textSize_16sp"
+                    app:backgroundTint="@color/btn_dialog_bg_color"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="@color/dark_blue"
+                    app:strokeWidth="1dp" />
+
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
+
+</layout>

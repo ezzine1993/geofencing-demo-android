@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">GeofencingTest</string>
+    <string name="cancel">Annuler</string>
+    <string name="ok">Ok</string>
+    <string name="app_perrmission_request_statment">Cette application nécessite des permissions pour accéder à la GPS et le stockage de l\'appareil</string>
+    <string name="permission_requierd">Permission requise</string>
+    <string name="give_permissions">donner les permissions</string>
+    <string name="error">Error!</string>
+    <string name="unknown_error_statement">oops une erreur technique est survenue. merci de réessayer ultérieurement</string>
+    <string name="activate_tracking">Activer le traçage</string>
+    <string name="start_tracking">Commencer le traçage</string>
+    <string name="cancel_tracking">Annuler le traçage</string>
+    <string name="last_event_registered">Dernier événement enregistré:</string>
+    <string name="no_event_registered">aucun événement enregistré</string>
+    <string name="entrance">Entrée</string>
+    <string name="exit">Sortie</string>
+    <string name="in">le</string>
+    <string name="at">vers</string>
+    <string name="entrance_date_time_template">Entrée le dd/MM/yyyy vers HH:mm</string>
+    <string name="exit_date_time_template">Sortie  le dd/MM/yyyy vers HH:mm</string>
+    <string name="not_defined">N\A</string>
+    <string name="activate_tracking_statement">êtes-vous sûr de vouloir activer le traçage pour cette point?</string>
+    <string name="please_select_tracking_zone">Veuillez sélectionner la zone de traçage</string>
+    <string name="geofencing_update_channel_name">GeoFencing notifications</string>
+    <string name="geofencing_update_channel_description">afficher une notification quand le téléphone entre ou sort d\'une zone de traçée</string>
+</resources>

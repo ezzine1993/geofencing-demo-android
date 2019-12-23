@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.home.HomeActivity">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.comAndDev.geofencingtest.ui.home.HomeViewModel" />
+
+        <import type="android.view.View" />
+
+        <import type="com.comAndDev.geofencingtest.global.utils.ConstantsKt" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/iv_center_fence"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/transparent_white"
+            android:elevation="6dp"
+            android:onClick="@{() -> viewModel.centerGeoFence()}"
+            android:visibility="@{viewModel.trackingState == ConstantsKt.TRACKING_STATE_ACTIVE ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_ic_geofence_center" />
+
+        <ImageView
+            android:id="@+id/ic_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:src="@drawable/ic_marker"
+            android:visibility="@{viewModel.trackingState == ConstantsKt.TRACKING_STATE_INIT ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/mapView"
+            app:layout_constraintStart_toStartOf="@+id/mapView" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_fence_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rect_gray_round_corners"
+            android:elevation="6dp"
+            android:visibility="@{viewModel.trackingState == ConstantsKt.TRACKING_STATE_INIT ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/btn_activation"
+            app:layout_constraintEnd_toEndOf="@+id/btn_activation"
+            app:layout_constraintStart_toStartOf="@+id/btn_activation">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Placer le marqueur sur le point d'intérêt"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textSize_16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_latitude_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Latitude: "
+                android:textColor="@color/orange"
+                android:textSize="@dimen/textSize_18sp"
+                app:layout_constraintStart_toStartOf="@+id/tv_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+            <TextView
+                android:id="@+id/tv_latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@{viewModel.latitude}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textSize_18sp"
+                android:visibility="@{viewModel.cameraIsMoving ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_latitude_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/tv_latitude_label" />
+
+            <TextView
+                android:id="@+id/tv_longitude_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Longitude:"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/textSize_18sp"
+                app:layout_constraintStart_toStartOf="@+id/tv_latitude_label"
+                app:layout_constraintTop_toBottomOf="@+id/tv_latitude_label" />
+
+            <TextView
+                android:id="@+id/tv_longitude"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@{viewModel.longitude}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textSize_18sp"
+                android:visibility="@{viewModel.cameraIsMoving ? View.INVISIBLE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_longitude_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/tv_longitude_label" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="right"
+                app:constraint_referenced_ids="tv_longitude_label,tv_latitude_label"
+                tools:layout_editor_absoluteX="395dp" />
+
+            <TextView
+                android:id="@+id/tv_radius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rayon (m):"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/textSize_18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/til_radius"
+                app:layout_constraintStart_toStartOf="@+id/tv_longitude_label"
+                app:layout_constraintTop_toTopOf="@+id/til_radius" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_radius"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:textAlignment="center"
+                app:boxStrokeColor="@color/orange"
+                app:hintEnabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toBottomOf="@+id/tv_longitude">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:text="@={viewModel.radius}"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/textSize_18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@android:color/transparent"
+                android:onClick="@{() -> viewModel.cancelTracking()}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_cancel" />
+
+            <ProgressBar
+                android:id="@+id/pbLatitude"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="16dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/transparent_white"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="@{viewModel.cameraIsMoving ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_latitude_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/tv_latitude_label" />
+
+            <ProgressBar
+                android:id="@+id/pbLongitude"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="16dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/transparent_white"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="@{viewModel.cameraIsMoving ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_longitude_label"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/tv_longitude_label" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_activation"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:onClick="@{() -> viewModel.switchState()}"
+            android:text="@{viewModel.trackingStateString}"
+            app:backgroundTintResId="@{viewModel.trackingStateColor}"
+            app:cornerRadius="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/mapView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_active_fence_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_gray_round_corners"
+            android:elevation="6dp"
+            android:visibility="@{viewModel.trackingState == ConstantsKt.TRACKING_STATE_ACTIVE ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_fence_settings"
+            app:layout_constraintEnd_toEndOf="@+id/btn_activation"
+            app:layout_constraintStart_toStartOf="@+id/btn_activation"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_last_event_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/last_event_registered"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/textSize_18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_last_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@{viewModel.lastEventString}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textSize_18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_last_event_label"
+                app:layout_constraintTop_toBottomOf="@+id/tv_last_event_label" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

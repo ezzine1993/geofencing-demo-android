@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--layout_splash-->
+    <dimen name="white_bar_height">5dp</dimen>'
+    <dimen name="dialog_btn_width">110dp</dimen>
+    <dimen name="dialog_btn_height">50dp</dimen>
+</resources>
