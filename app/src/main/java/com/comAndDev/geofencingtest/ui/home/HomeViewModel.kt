@@ -99,17 +99,26 @@ class HomeViewModel @Inject constructor(
     val shouldCenterGeoFence: LiveData<Boolean>
         get() = _shouldCenterGeoFence
 
-    private val lastEvent = MutableLiveData<GeoFencingEvent?>()
+    private val lastEvent = geoFencingEventRepository.getRegisteredEventLiveData()
 
     val lastEventString: LiveData<String> =
         Transformations.map(lastEvent) { getLastEventString(it) }
 
     init {
-        _trackingState.value = TRACKING_STATE_NOT_ACTIVE
+
+        activeFenceRepository
+            .getActiveFence()?.let {
+                _geoFence.value = it
+                _trackingState.value = TRACKING_STATE_ACTIVE
+                selectedPoint.value = LatLng(it.latitude, it.latitude)
+                radius.value = "${it.radius}"
+            } ?: run {
+            _trackingState.value = TRACKING_STATE_NOT_ACTIVE
+            selectedPoint.value = null
+            radius.value = "$DEFAULT_RADIUS"
+        }
+
         _cameraIsMoving.value = false
-        selectedPoint.value = null
-        radius.value = "$DEFAULT_RADIUS"
-        lastEvent.value = null
     }
 
     fun handleDeniedPermission(isBlocked: Boolean) {
@@ -168,20 +177,79 @@ class HomeViewModel @Inject constructor(
             else -> cancelTracking()
         }
 
-    fun cancelTracking() {
-        _trackingState.value = TRACKING_STATE_NOT_ACTIVE
-        selectedPoint.value = null
+    fun cancelTracking(dialogIsVisible: Boolean = false) {
+
+        if (dialogIsVisible || selectedPoint.value == null) {
+            tryToCancelTracking()
+        } else {
+            showChooseDialog(
+                R.string.cancel_tracking,
+                R.string.cancel_tracking_statement,
+                R.string.cancel_tracking,
+                R.string.continue_tracking,
+                { cancelTracking(true) }
+            )
+        }
+
+    }
+
+    private fun tryToCancelTracking() {
+
+        showProgressBar()
+        val success: (Unit) -> Unit = {
+            hideProgressBar()
+            _trackingState.value = TRACKING_STATE_NOT_ACTIVE
+            selectedPoint.value = null
+            _geoFence.value = null
+            radius.value = "$DEFAULT_RADIUS"
+
+            activeFenceRepository.cancelGeofencing()
+        }
+
+        val error: (Throwable) -> Unit = {
+            _shouldShowErrorToast.value = "Error"
+        }
+
+        compositDisposable.add(
+            activeFenceRepository
+                .cancelGeofencing()
+                .subscribeOn(schedularProvider.io())
+                .observeOn(schedularProvider.ui())
+                .subscribe(success, error)
+        )
     }
 
     private val startTracking: () -> Unit = {
-        _trackingState.value = TRACKING_STATE_ACTIVE
 
         selectedPoint.value?.apply {
+            showProgressBar()
             val radiusValue =
                 if (radius.value.isNullOrEmpty()) DEFAULT_RADIUS else radius.value!!.toInt()
 
             val activeFence = ActiveFence(latitude, longitude, radiusValue)
-            _geoFence.value = activeFence
+
+            val success: (ActiveFence) -> Unit = {
+                _geoFence.value = it
+                activeFenceRepository.saveActiveFence(it)
+                _trackingState.value = TRACKING_STATE_ACTIVE
+                hideProgressBar()
+
+            }
+
+            val error: (Throwable) -> Unit = {
+                hideProgressBar()
+                _shouldShowErrorToast.value = "Error"
+            }
+
+            compositeDisposable.add(
+                activeFenceRepository
+                    .setActiveFence(activeFence)
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .subscribe(success, error)
+            )
+
+
         }
 
     }
@@ -264,14 +332,21 @@ class HomeViewModel @Inject constructor(
             when (event.eventType) {
                 GEOFENCE_EVENT_ERROR_GPS -> "Error gps"
                 GEOFENCE_EVENT_ERROR_PERMISSION -> "Error permission"
-                GEOFENCE_EVENT_ENTER -> timeStampToString(
-                    event.timestamp,
-                    applicationContext.getString(R.string.entrance_date_time_template)
-                )
-                else -> timeStampToString(
-                    event.timestamp,
-                    applicationContext.getString(R.string.exit_date_time_template)
-                )
+                else -> {
+
+                    val dateTemplate =
+                        applicationContext.getString(
+                            if (event.eventType == GEOFENCE_EVENT_ENTER)
+                                R.string.entrance_date_time_template
+                            else
+                                R.string.exit_date_time_template
+                        )
+
+                    val dateComponents = timeStampToString(event.timestamp)
+
+                    String.format(dateTemplate, dateComponents[0], dateComponents[1])
+
+                }
             }
         }
     }

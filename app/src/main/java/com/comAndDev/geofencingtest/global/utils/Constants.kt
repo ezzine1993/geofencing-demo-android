@@ -11,6 +11,8 @@ const val TRACKING_STATE_INIT = 0
 const val LATITUDE = "latitude"
 const val LONGITUDE = "longitude"
 const val DEFAULT_RADIUS = 100
-const val GEOFENCING_NOTIFICATION_CHANAL_ID = "geofencing_notification"
+const val GEOFENCING_NOTIFICATION_CHANNEL_ID = "geofencing_notification"
+const val GEOFENCING_REQUEST_ID = "geofencing_request_id"
+const val DATE_TEMPLATE = "dd/MM/yyyy HH:mm"
 
 

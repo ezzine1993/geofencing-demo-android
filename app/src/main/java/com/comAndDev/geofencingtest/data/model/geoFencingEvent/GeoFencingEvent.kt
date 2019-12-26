@@ -1,7 +1,7 @@
 package com.comAndDev.geofencingtest.data.model.geoFencingEvent
 
 
-data class GeoFencingEvent(val eventType: Int, val timestamp: Long) {
+data class GeoFencingEvent(val id: Int, val eventType: Int, val timestamp: Long) {
 
     companion object {
         val GEOFENCE_EVENT_ENTER = 1

@@ -33,16 +33,17 @@ class GeoFencingReceiver : DaggerBroadcastReceiver() {
                 || transition == Geofence.GEOFENCE_TRANSITION_EXIT
             ) {
                 val event =
-                    GeoFencingEvent(transition, geoFencingEvent.triggeringLocation.time)
+                    GeoFencingEvent(
+                        eventRepository.getNextEventId(),
+                        transition,
+                        geoFencingEvent.triggeringLocation.time
+                    )
 
                 eventRepository.registerGeoFenceEvent(event)
 
-                showNotification(event)
+                notificationManager.showGeoFencingEventNotification(event)
+
             }
         }
-    }
-
-    private fun showNotification(event: GeoFencingEvent) {
-
     }
 }

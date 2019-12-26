@@ -49,6 +49,8 @@ class HomeActivity : BaseActivity(), OnMapReadyCallback {
 
     private var geoFenceCenterMarker: Marker? = null
 
+    private var mapReadyInitBlock: (() -> Unit)? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +78,8 @@ class HomeActivity : BaseActivity(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap?) {
         googleMap = map
         googleMap?.isMyLocationEnabled = true
+        mapReadyInitBlock?.invoke()
+        mapReadyInitBlock = null
     }
 
     private fun isPermissionGranted() = ContextCompat.checkSelfPermission(
@@ -208,10 +212,15 @@ class HomeActivity : BaseActivity(), OnMapReadyCallback {
     private fun registerGeoFenceObserver() {
         viewModel.geoFence.observe(this, Observer {
             it?.let {
-                drawGeoFence(it)
-                drawMarker(it.latitude, it.longitude)
-                fitGeoFenceBounds(geoFenceCircle!!)
+                val drawFenceBlock = {
+                    drawGeoFence(it)
+                    drawMarker(it.latitude, it.longitude)
+                }
+
+                googleMap?.let { drawFenceBlock() } ?: run { mapReadyInitBlock = drawFenceBlock }
             } ?: run {
+                geoFenceCircle?.remove()
+                geoFenceCenterMarker?.remove()
 
             }
         })
@@ -219,27 +228,26 @@ class HomeActivity : BaseActivity(), OnMapReadyCallback {
 
     private fun drawGeoFence(activeFence: ActiveFence) {
 
-        googleMap?.let {
 
-            val circleOptions = CircleOptions()
-                .center(LatLng(activeFence.latitude, activeFence.longitude))
-                .radius(activeFence.radius.toDouble())
-                .fillColor(R.color.dark_blue)
-                .strokeColor(R.color.dark_blue)
-                .strokeWidth(2f)
+        val circleOptions = CircleOptions()
+            .center(LatLng(activeFence.latitude, activeFence.longitude))
+            .radius(activeFence.radius.toDouble())
+            .fillColor(R.color.dark_blue)
+            .strokeColor(R.color.dark_blue)
+            .strokeWidth(2f)
 
-            geoFenceCircle = it.addCircle(circleOptions)
-        }
+        geoFenceCircle = googleMap?.addCircle(circleOptions)
+
+        geoFenceCircle?.let { fitGeoFenceBounds(it) }
 
 
     }
 
     private fun drawMarker(latitude: Double, longitude: Double) {
 
-        googleMap?.let {
-            val markerOptions = MarkerOptions().position(LatLng(latitude, longitude))
-            geoFenceCenterMarker = it.addMarker(markerOptions)
-        }
+        val markerOptions = MarkerOptions().position(LatLng(latitude, longitude))
+        geoFenceCenterMarker = googleMap?.addMarker(markerOptions)
+
     }
 
     private fun getGeoFenceBounds(geoFenceCircle: Circle): LatLngBounds {

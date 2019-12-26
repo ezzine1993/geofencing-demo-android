@@ -10,7 +10,7 @@ import com.google.gson.Gson
 private const val FILE_NAME_FLAG = "geofencing_test_file_flag"
 private const val PERMISSION_IS_REQUESTED_ONCE_FLAG = "1"
 private const val LAST_REGISTERED_EVENT_FLAG = "2"
-private const val ACTIVE_FENCE_FLAG = "2"
+private const val ACTIVE_FENCE_FLAG = "3"
 
 
 class SharedPreferences(context: Context, private val gson: Gson) {
@@ -57,7 +57,7 @@ class SharedPreferences(context: Context, private val gson: Gson) {
         saveJson(null, ACTIVE_FENCE_FLAG)
     }
 
-    private fun <T> saveJson(data: T, key: String) {
+    private fun <T> saveJson(data: T?, key: String) {
 
         val json = gson.toJson(data)
 
@@ -69,7 +69,7 @@ class SharedPreferences(context: Context, private val gson: Gson) {
 
     private fun <T> getData(c: Class<T>, key: String): T? {
         sharedPreferences
-            .getString(LAST_REGISTERED_EVENT_FLAG, null)
+            .getString(key, null)
             ?.let { return gson.fromJson(it, c) }
             ?: kotlin.run { return null }
     }

@@ -11,4 +11,6 @@ interface GeoFencingEventRepository {
     fun getLastRegisteredGeoFenceEvent(): GeoFencingEvent?
 
     fun getRegisteredEventLiveData(): LiveData<GeoFencingEvent?>
+
+    fun getNextEventId(): Int
 }

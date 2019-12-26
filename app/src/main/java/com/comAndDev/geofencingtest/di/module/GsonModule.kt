@@ -12,5 +12,5 @@ class GsonModule {
     @Provides
     @ApplicationScope
     fun providesGson(): Gson =
-        GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create()
+        GsonBuilder().setPrettyPrinting().create()
 }
