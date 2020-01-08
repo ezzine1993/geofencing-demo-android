@@ -55,6 +55,7 @@ class SharedPreferences(context: Context, private val gson: Gson) {
     fun clearActiveFenceData() {
         saveJson(null, LAST_REGISTERED_EVENT_FLAG)
         saveJson(null, ACTIVE_FENCE_FLAG)
+        _lastEventLiveData.value = null
     }
 
     private fun <T> saveJson(data: T?, key: String) {
